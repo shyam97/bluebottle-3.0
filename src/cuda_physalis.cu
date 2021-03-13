@@ -159,9 +159,8 @@ void cuda_lamb(void)
     /* Interpolate field varaibles to quadrature nodes */
     check_nodes<<<num_parts, dim_nodes>>>(nparts, _parts, _bc, _DOM);
     interpolate_nodes<<<num_parts, dim_nodes>>>(_p, _u, _v, _w, rho_f, nu,
-      gradP, _parts, _pp, _ur, _ut, _up, _bc,
-      s_beta, s_ref, g);
-
+      gradP, _parts, _pp, _ur, _ut, _up, _bc);
+    
     /* Create scalar product storage using max particle coefficient size */
     int sp_size = nparts * NNODES * ncoeffs_max;
     checkCudaErrors(cudaMalloc(&_int_Yp_re, sp_size * sizeof(real)));
@@ -207,7 +206,7 @@ void cuda_lamb(void)
     dim3 num_nparts(b_nparts);
 
     calc_forces<<<num_nparts, dim_nparts>>>(_parts, nparts, gradP.x, gradP.y,
-      gradP.z, rho_f, mu, nu, s_beta, s_ref, g);
+      gradP.z, rho_f, mu, nu);
 
     /* Free */
     checkCudaErrors(cudaFree(_int_Yp_re));
@@ -856,48 +855,36 @@ void cuda_partial_sum_k(void)
 }
 
 extern "C"
-void cuda_lamb_err(real *error, int *number)
+real cuda_lamb_err(void)
 {
   //printf("N%d >> Determining Lamb's error\n", rank);
-  real err = DBL_MIN;
-  int num = -1;
-  struct {double err; int num;} data;
+  real error = DBL_MIN;
   if (nparts > 0) {
     // create a place to store sorted coefficients and errors
     real *_part_errors;
-    int *_part_nums;
     cudaMalloc((void**) &_part_errors, nparts*sizeof(real));
-    cudaMalloc((void**) &_part_nums, nparts*sizeof(int));
-
+    
     // sort the coefficients and calculate errors along the way
     dim3 numBlocks(nparts);
     dim3 dimBlocks(ncoeffs_max);
 
     compute_error<<<numBlocks, dimBlocks>>>(lamb_cut, ncoeffs_max, nparts,
-     _parts, _part_errors, _part_nums);
+     _parts, _part_errors);
 
     // find maximum error of all particles
     thrust::device_ptr<real> t_part_errors(_part_errors);
-//    error = thrust::reduce(t_part_errors,
-//                           t_part_errors + nparts,
-//                           0., thrust::maximum<real>());
-    thrust::device_vector<real>::iterator iter = thrust::max_element(t_part_errors, t_part_errors + nparts);
-    int pos = thrust::device_pointer_cast(&iter[0]) - t_part_errors;
-    cudaMemcpy(&err, _part_errors + pos, sizeof(real), cudaMemcpyDeviceToHost);
-    cudaMemcpy(&num, _part_nums + pos, sizeof(int), cudaMemcpyDeviceToHost);
-    data.err = err;
-    data.num = num;
+    error = thrust::reduce(t_part_errors,
+                           t_part_errors + nparts,
+                           0., thrust::maximum<real>());
 
     // clean up
     cudaFree(_part_errors);
-    cudaFree(_part_nums);
 
     // store copy of coefficients for future calculation
     store_coeffs<<<numBlocks, dimBlocks>>>(_parts, nparts, ncoeffs_max);
   }
 
-  // MPI reduce to find max error and its part number
-  MPI_Allreduce(MPI_IN_PLACE, &data, 1, MPI_DOUBLE_INT, MPI_MAXLOC, MPI_COMM_WORLD);
-  *error = data.err;
-  *number = data.num;
+  // MPI reduce to find max error
+  MPI_Allreduce(MPI_IN_PLACE, &error, 1, mpi_real, MPI_MAX, MPI_COMM_WORLD);
+  return error;
 }

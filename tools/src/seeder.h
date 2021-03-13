@@ -76,11 +76,6 @@ extern double spring_z;
 extern double spring_l;
 extern int translating;
 extern int rotating;
-extern double ss;
-extern int update;
-extern double cp;
-extern double srs;
-extern int sorder;
 
 extern char part_file[FILE_NAME_SIZE];     // ./path/to/input/part.config
 extern char INPUT_DIR[FILE_NAME_SIZE];     // ./path/to/input

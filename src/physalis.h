@@ -37,7 +37,7 @@
  *  DIV_ST
  * USAGE
  */
-#define DIV_ST -1e-10
+#define DIV_ST 1e-10
 /* FUNCTION
  *  Define a value to use for fudging the value of theta when a division by
  *  sin(theta) occurs
@@ -56,147 +56,75 @@
  ******
  */
 
-/****d* physalis/WEST_WALL_D
+/****d* physalis/WEST_WALL
  * NAME
- *  WEST_WALL_D
+ *  WEST_WALL
  * USAGE
  */
-#define WEST_WALL_D -100
+#define WEST_WALL -10
 /* FUNCTION
- *  Define a value to use for identifying that the west wall(dirichlet) is
- *  interfering with a quadrature node
+ *  Define a value to use for identifying that the west wall is interfering with
+ *  a quadrature node
  ******
  */
 
-/****d* physalis/WEST_WALL_N
+/****d* physalis/EAST_WALL
  * NAME
- *  WEST_WALL_N
+ *  EAST_WALL
  * USAGE
  */
-#define WEST_WALL_N -101
+#define EAST_WALL -11
 /* FUNCTION
- *  Define a value to use for identifying that the west wall(neumann) is
- *  interfering with a quadrature node
+ *  Define a value to use for identifying that the east wall is interfering with
+ *  a quadrature node
  ******
  */
 
-/****d* physalis/EAST_WALL_D
+/****d* physalis/SOUTH_WALL
  * NAME
- *  EAST_WALL_D
+ *  SOUTH_WALL
  * USAGE
  */
-#define EAST_WALL_D -110
+#define SOUTH_WALL -12
 /* FUNCTION
- *  Define a value to use for identifying that the east wall(dirichlet) is
- *  interfering with a quadrature node
+ *  Define a value to use for identifying that the SOUTH wall is interfering with
+ *  a quadrature node
  ******
  */
 
-/****d* physalis/EAST_WALL_N
+/****d* physalis/NORTH_WALL
  * NAME
- *  EAST_WALL_N
+ *  NORTH_WALL
  * USAGE
  */
-#define EAST_WALL_N -111
+#define NORTH_WALL -13
 /* FUNCTION
- *  Define a value to use for identifying that the east wall(neumann) is
- *  interfering with a quadrature node
+ *  Define a value to use for identifying that the NORTH wall is interfering with
+ *  a quadrature node
  ******
  */
 
-/****d* physalis/SOUTH_WALL_D
+/****d* physalis/BOTTOM_WALL
  * NAME
- *  SOUTH_WALL_D
+ *  BOTTOM_WALL
  * USAGE
  */
-#define SOUTH_WALL_D -120
+#define BOTTOM_WALL -14
 /* FUNCTION
- *  Define a value to use for identifying that the SOUTH wall(dirichlet)
- *  is interfering with a quadrature node
+ *  Define a value to use for identifying that the BOTTOM wall is interfering with
+ *  a quadrature node
  ******
  */
 
-/****d* physalis/SOUTH_WALL_N
+/****d* physalis/TOP_WALL
  * NAME
- *  SOUTH_WALL_N
+ *  TOP_WALL
  * USAGE
  */
-#define SOUTH_WALL_N -121
+#define TOP_WALL -15
 /* FUNCTION
- *  Define a value to use for identifying that the SOUTH wall(neumann)
- *  is interfering with a quadrature node
- ******
- */
-
-/****d* physalis/NORTH_WALL_D
- * NAME
- *  NORTH_WALL_D
- * USAGE
- */
-#define NORTH_WALL_D -130
-/* FUNCTION
- *  Define a value to use for identifying that the NORTH wall(dirichlet)
- *  is interfering with a quadrature node
- ******
- */
-
-/****d* physalis/NORTH_WALL_N
- * NAME
- *  NORTH_WALL_N
- * USAGE
- */
-#define NORTH_WALL_N -131
-/* FUNCTION
- *  Define a value to use for identifying that the NORTH wall(neumann)
- *  is interfering with a quadrature node
- ******
- */
-
-/****d* physalis/BOTTOM_WALL_D
- * NAME
- *  BOTTOM_WALL_D
- * USAGE
- */
-#define BOTTOM_WALL_D -140
-/* FUNCTION
- *  Define a value to use for identifying that the BOTTOM wall(dirichlet)
- *  is interfering with a quadrature node
- ******
- */
-
-/****d* physalis/BOTTOM_WALL_N
- * NAME
- *  BOTTOM_WALL_N
- * USAGE
- */
-#define BOTTOM_WALL_N -141
-/* FUNCTION
- *  Define a value to use for identifying that the BOTTOM wall(neumann)
- *  is interfering with a quadrature node
- ******
- */
-
-/****d* physalis/TOP_WALL_D
- * NAME
- *  TOP_WALL_D
- * USAGE
- */
-#define TOP_WALL_D -150
-/* FUNCTION
- *  Define a value to use for identifying that the TOP wall(dirichlet)
- *  is interfering with a quadrature node
- ******
- */
-
-/****d* physalis/TOP_WALL_N
- * NAME
- *  TOP_WALL_N
- * USAGE
- */
-#define TOP_WALL_N -151
-/* FUNCTION
- *  Define a value to use for identifying that the TOP wall(neumann)
- *  is interfering with a quadrature node
+ *  Define a value to use for identifying that the TOP wall is interfering with
+ *  a quadrature node
  ******
  */
 
@@ -368,7 +296,7 @@ void cuda_lamb(void);
  *  cuda_lamb_err()
  * USAGE
  */
-void cuda_lamb_err(real *error, int *num);
+real cuda_lamb_err(void);
 /*
  * FUNCTION
  *  Compute the error between the current and previous sets of Lamb's

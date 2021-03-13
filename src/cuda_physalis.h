@@ -282,8 +282,7 @@ __global__ void check_nodes(int nparts, part_struct *parts, BC *bc,
  */
 __global__ void interpolate_nodes(real *p, real *u, real *v, real *w,
   real rho_f, real nu, gradP_struct gradP, part_struct *parts, real *pp,
-  real *ur, real *ut, real *up, BC *bc,
-  real s_beta, real s_ref, g_struct g);
+  real *ur, real *ut, real *up, BC *bc);
 /*
  * PURPOSE
  *  CUDA kernel to interpolate field variables to Lebedev quadrature nodes.
@@ -367,8 +366,7 @@ __global__ void compute_lambs_coeffs(part_struct *parts, real relax,
  * USAGE
  */
 __global__ void calc_forces(part_struct *parts, int nparts,
-  real gradPx, real gradPy, real gradPz, real rho_f, real mu, real nu,
-  real s_beta, real s_ref, g_struct g);
+  real gradPx, real gradPy, real gradPz, real rho_f, real mu, real nu);
 /*
  * PURPOSE
  *  Calculate the hydrodynamic forces on each particle
@@ -738,7 +736,7 @@ __global__ void unpack_sums_b(real *sum_recv_b, int *offset, int *bin_start,
  * USAGE
  */
 __global__ void compute_error(real lamb_cut, int ncoeffs_max, int nparts,
-  part_struct *parts, real *part_errors, int *part_nums);
+  part_struct *parts, real *part_errors);
 /*
  * PURPOSE
  *  Compute the error between the current and previous iteration Lamb's
@@ -750,7 +748,6 @@ __global__ void compute_error(real lamb_cut, int ncoeffs_max, int nparts,
  *  * nparts -- the total number of particles
  *  * parts -- particle info structure
  *  * part_errors -- the maximum error for each particle
- *  * part_nums -- particle global number
  ******
 */
 
