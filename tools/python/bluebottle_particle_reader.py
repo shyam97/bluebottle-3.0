@@ -66,8 +66,10 @@ def open(time):
 
   # Sort global indices, carry along sorting index for later use
   sorted_index = numpy.argsort(part_index)
-  part_index = part_index[sorted_index]
-
+  try:
+      part_index = part_index[sorted_index]
+  except:
+      print("Only one particle exist.")
   return (f, part_index, sorted_index)
 
 def close():
@@ -94,7 +96,7 @@ def read_part_position():
   x1 = x1[sorted_index]
   y1 = y1[sorted_index]
   z1 = z1[sorted_index]
-  
+
   return (x1,y1,z1)
 
 # Return particle velocities, sorted according to global index

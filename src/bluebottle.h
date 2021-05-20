@@ -2,7 +2,7 @@
  ********************************* BLUEBOTTLE **********************************
  *******************************************************************************
  *
- *  Copyright 2012 - 2018 Adam Sierakowski and Daniel Willen, 
+ *  Copyright 2012 - 2018 Adam Sierakowski and Daniel Willen,
  *                         The Johns Hopkins University
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,6 +59,7 @@
   #include "cgns.h"
 #endif
 #include "physalis.h"
+#include "tracer.h"
 
 /* MACROS */
 
@@ -122,7 +123,7 @@
 
 /****d* bluebottle/INPUT_DIR
  * NAME
- *  INPUT_DIR 
+ *  INPUT_DIR
  * TYPE
  */
 #define INPUT_DIR "input"
@@ -153,7 +154,7 @@
 #define ENV_LOCAL_RANK "OMPI_COMM_WORLD_LOCAL_RANK"
 /*
  * PURPOSE
- * Define environment variable which reads the local rank of the current mpi 
+ * Define environment variable which reads the local rank of the current mpi
  * process.
  * MVAPICH2: MV2_COMM_WORLD_LOCAL_RANK
  * OMPI: OMPI_COMM_WORLD_LOCAL_RANK
@@ -192,7 +193,7 @@
 /*
  * PURPOSE
  *  Define the max number of threads per block on a CUDA device. Hardcoded but
- *  is device-specific 
+ *  is device-specific
  ******
  */
 
@@ -204,8 +205,8 @@
 #define MAX_THREADS_DIM 16
 /*
  * PURPOSE
- *  Define the max number of threads per dimension per block on a CUDA device. 
- *  Hardcoded but is device-specific 
+ *  Define the max number of threads per dimension per block on a CUDA device.
+ *  Hardcoded but is device-specific
  ******
  */
 
@@ -514,6 +515,11 @@ extern dom_struct *dom;
  *  dom_structs
  ******
  */
+
+extern int tracercheck;
+// extern tracer *tracer_array;
+// extern real randomnum;
+// extern real rnum;
 
 /****v* bluebottle/rho_f
  * NAME
@@ -882,7 +888,7 @@ typedef struct gradP_struct {
   real zm;
   real za;
 } gradP_struct;
-/* 
+/*
  * PURPOSE
  *  Carry imposed pressure gradient values.
  ******
@@ -1046,7 +1052,7 @@ extern real *_p0;
   * TYPE
   */
 extern real *u_star;
-/* 
+/*
   * PURPOSE
   * X-direction intermediate velocity. It is an array on each processor that
   * contains the subdomain's field.
@@ -1059,7 +1065,7 @@ extern real *u_star;
   * TYPE
   */
 extern real *v_star;
-/* 
+/*
   * PURPOSE
   * Y-direction intermediate velocity. It is an array on each processor that
   * contains the subdomain's field.
@@ -1072,7 +1078,7 @@ extern real *v_star;
   * TYPE
   */
 extern real *w_star;
-/* 
+/*
   * PURPOSE
   * X-direction intermediate velocity. It is an array on each processor that
   * contains the subdomain's field.
@@ -1085,7 +1091,7 @@ extern real *w_star;
   * TYPE
   */
 extern real *_u_star;
-/* 
+/*
   * PURPOSE
   *  CUDA device array for the x-direction intermediate velocity
   ******
@@ -1097,7 +1103,7 @@ extern real *_u_star;
   * TYPE
   */
 extern real *_v_star;
-/* 
+/*
   * PURPOSE
   *  CUDA device array for the y-direction intermediate velocity
   ******
@@ -1109,7 +1115,7 @@ extern real *_v_star;
   * TYPE
   */
 extern real *_w_star;
-/* 
+/*
   * PURPOSE
   *  CUDA device array for the z-direction intermediate velocity
   ******
@@ -1185,7 +1191,7 @@ extern real *v;
 extern real *_v;
 /*
  * PURPOSE
- *  CUDA device analog for v.  
+ *  CUDA device analog for v.
  ******
  */
 
@@ -1234,7 +1240,7 @@ extern real *w;
 extern real *_w;
 /*
  * PURPOSE
- *  CUDA device analog for w. 
+ *  CUDA device analog for w.
  ******
  */
 
@@ -1382,7 +1388,7 @@ extern real *_conv_u;
 /*
  * PURPOSE
  *  CUDA device array to store the previous x-component convection solution
- *  for use in the next Adams-Bashforth step. 
+ *  for use in the next Adams-Bashforth step.
  ******
  */
 
@@ -2230,7 +2236,7 @@ extern real *_recv_Gfz_b;
 extern real *_rhs_p;
 /*
  * PURPOSE
- *  CUDA device array for storing the right-hand side of the pressure-Poisson 
+ *  CUDA device array for storing the right-hand side of the pressure-Poisson
  *  problem
  ******
  */
@@ -2257,7 +2263,7 @@ extern real *_z_q;
 /*
  * PURPOSE
  *  CUDA device array for the residual vector in the Poisson solver. Stores the
- *  preconditioned residual at each subdomain's soln points (does not include 
+ *  preconditioned residual at each subdomain's soln points (does not include
  *  exchange cells)
  ******
  */
@@ -2270,8 +2276,8 @@ extern real *_z_q;
 //extern real *_rs_0;
 /*
  * PURPOSE
- *  CUDA device array for the initial residual vector in the Poisson solver. 
- *  Stores the initial residual at each subdomain's soln points (does not 
+ *  CUDA device array for the initial residual vector in the Poisson solver.
+ *  Stores the initial residual at each subdomain's soln points (does not
  *  include exchange cells)
  ******
  */
@@ -2299,7 +2305,7 @@ extern real *_pb_q;
 /*
  * PURPOSE
  *  CUDA device array for the descent ("pointing") direction in the CG solver on
- *  the ghost domain. Stores the direction at ALL grid points (including 
+ *  the ghost domain. Stores the direction at ALL grid points (including
  *  exchange cells). This info is needed for the sparse matrix-vector product.
  ******
  */
@@ -2312,8 +2318,8 @@ extern real *_pb_q;
 //extern real *_s_q;
 /*
  * PURPOSE
- *  CUDA device array for the 2nd descent ("pointing") direction in the CG 
- *  solver on the inner computational domain. Stores the direction at each 
+ *  CUDA device array for the 2nd descent ("pointing") direction in the CG
+ *  solver on the inner computational domain. Stores the direction at each
  *  subdomain's soln points (does not include exchange cells)
  ******
  */
@@ -2326,7 +2332,7 @@ extern real *_pb_q;
 //extern real *_sb_q;
 /*
  * PURPOSE
- *  CUDA device array for the 2nd descent ("pointing") direction in the CG 
+ *  CUDA device array for the 2nd descent ("pointing") direction in the CG
  *  solver on the ghost domain. Stores the direction at ALL grid points
  *  (including exchange cells). This info is need for the SpMV product
  ******
@@ -2465,7 +2471,7 @@ extern real p_bc_tdelay;
   *  The time when the applied pressure should be applied
   ******
   */
- 
+
 /****v* bluebottle/g_bc_tdelay;
   * NAME
   * g_bc_tdelay;
@@ -2654,7 +2660,7 @@ void cuda_block(void);
 void cuda_dom_malloc_host(void);
 /*
  * FUNCTION
- *  Allocate domain memory on host 
+ *  Allocate domain memory on host
  ******
  */
 
@@ -2947,7 +2953,7 @@ void cuda_find_dt(void);
 void cuda_compute_forcing(void);
 /*
  * FUNCTION
- *  Set up the forcing array for this time step. 
+ *  Set up the forcing array for this time step.
  ******
  */
 
@@ -2959,7 +2965,7 @@ void cuda_compute_forcing(void);
 void cuda_compute_turb_forcing(void);
 /*
  * FUNCTION
- *  Set up the turbulent forcing for this time step. 
+ *  Set up the turbulent forcing for this time step.
  ******
  */
 
@@ -3037,7 +3043,7 @@ void cuda_dom_BC_p(real *array);
  * ARGUMENTS
  *  * array -- _p or _phi, field to apply neumann conditions to
  ******
- */ 
+ */
 
 /****f* bluebottle/cuda_store_u()
  * NAME
@@ -3274,5 +3280,6 @@ void cuda_lamb_test(void);
 
 /* Non-essential functions */
 void cuda_check_errors(int line); // useful for debugging cuda errors
+
 
 #endif // _BLUEBOTTLE_H

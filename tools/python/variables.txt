@@ -1,0 +1,76 @@
+########## FLOW.CONFIG ########## 
+
+(Xs, Xe, Xn)  = (Extents in x-direction, number of cells in x-direction)
+(Ys, Ye, Yn)  = (Extents in y-direction, number of cells in y-direction)
+(Zs, Ze, Zn)  = (Extents in z-direction, number of cells in z-direction)
+
+(In, Jn, Kn)  = (Decomposition in x-,y- and z-directions)
+
+rho_f         = Density of fluid
+nu            = Kinematic viscosity of fluid
+
+duration      = Simulation duration
+CFL           = Max. CFL number for time-stepping
+pp_max_iter   = Maximum iterations for pressure-Poisson cycle
+pp_residual   = Convergence criteria for pressure-Poisson cycle
+lamb_max_iter = Maximum iterations for Lamb cycle
+lamb_residual = Convergence criteria for Lamb cycle
+lamb_relax    = Relaxation factor for Lamb iterations (0 to old value, 1 to new value)
+lamb_cut      = Ignore errors below this value
+
+v_bc_tdelay   = Time when Dirichlet BC should be applied
+
+bc.pW         = Pressure BC for -X face
+bc.pE         = Pressure BC for +X face
+bc.pS         = Pressure BC for -Y face
+bc.pN         = Pressure BC for +Y face
+bc.pB         = Pressure BC for -Z face
+bc.pT         = Pressure BC for +Z face
+
+bc.u*         = X-velocity BC for * face
+
+bc.v*         = Y-velocity BC for * face
+
+bc.w*         = Z-velocity BC for * face
+
+init_cond     = Initial fluid state in domain
+
+out_plane     = Define outlet plane
+
+p_bc_tdelay   = Time when pressure BC should be applied
+gradP.*       = Pressure gradient in *-direction (value,rate of change)
+g_bc_tdelay   = Time when gravity should be applied
+g.*           = Acceleration due to gravity in *-direction (value,rate of change)
+
+Kp            = Proportional gain
+Kd            = Derivative gain
+Ki            = Integral gain
+
+turbA         = Turbulence forcing magnitude
+turbl         = Turbulence forcing integral scale
+turb_k0       = Turbulence forcing mean kinetic energy
+(See Lundgreen 2003, Rosales and Meneveau 2005, Carroll and Blanquart 2013)
+
+
+########## PART.CONFIG ##########
+
+n             = Number of particles
+l/a           = Particle interaction length / particle radius
+
+r             = Particle radius
+(x,y,z)       = Initial particle position
+(u,v,w)       = Initial particle velocity
+(aFx,aFy,aFz) = Applied force in (x,y,z)-directions
+(aLx,aLy,aLz) = Applied moment in (x,y,z)-directions
+rho           = Particle density
+E             = Particle Young's modulus
+sigma         = Particle Poisson ratio
+e_dry         = Dry coefficient of restitution
+coeff_fric    = Coefficient of friction
+order         = Lamb solution truncation order (O(order+1))
+rs/r          = Radius of integration for scalar products
+spring_k      = Spring constant
+spring (x,y,z)= Spring connection position
+spring_l      = Length of spring at rest
+translating   = 1 for movable, 0 for fixed
+rotating      = 1 for rotating, 0 for fixed

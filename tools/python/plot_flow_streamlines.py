@@ -40,11 +40,11 @@ if len(sys.argv) >= 2:    # output directory given
     t_start= sys.argv[2]
 
 else:                     # nothing given
-  print("read_flow error: Invalid commandline arguments.")
+  print("plot_flow_streamlines error: Invalid commandline arguments.")
   print("Usage: ")
-  print("   ./read_flow.py <./path/to/sim/output> <start_time>")
+  print("   ./plot_flow_streamlines <./path/to/sim/output> <start_time>")
   print(" or")
-  print("   ./read_flow.py <./path/to/sim/output>")
+  print("   ./plot_flow_streamlines.py <./path/to/sim/output>")
   sys.exit()
 
 # initialize the reader
@@ -66,7 +66,7 @@ for time in times:
   t = bbflow.read_time()
   (u,v,w) = bbflow.read_flow_velocity()
 
-  print("t =", t)
+  print("t =", t, u.shape, v.shape, w.shape)
 
   # close the CGNS file
   bbflow.close()

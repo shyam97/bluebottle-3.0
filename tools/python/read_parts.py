@@ -29,8 +29,23 @@ import sys, getopt
 import numpy as np
 import bluebottle_particle_reader as bbparts
 
+# Parse output directory from commandline
+if len(sys.argv) >= 2:    # output directory given
+  data_dir = sys.argv[1]
+
+  if len(sys.argv) >= 3:  # start time given
+    t_start= sys.argv[2]
+
+else:                     # nothing given
+  print("read_parts error: Invalid commandline arguments.")
+  print("Usage: ")
+  print("   ./read_parts.py <./path/to/sim/output> <start_time>")
+  print(" or")
+  print("   ./read_parts.py <./path/to/sim/output>")
+  sys.exit()
+
 # initialize the reader
-times = bbparts.init("~/bluebottle/sim/output")
+times = bbparts.init(data_dir)
 
 # visit all outputted time values
 for time in times:

@@ -22,11 +22,11 @@
 ################################################################################
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EDIT: DEPENDENCIES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-MPI_DIR = /home12233/shyam/bluebottle3/dependencies/openmpi
-HDF5_DIR = /home12233/shyam/bluebottle3/dependencies/hdf5
-CGNS_DIR = /home12233/shyam/bluebottle3/dependencies/cgns
-CUDA_DIR = /usr/local/cuda-9.1
-CUDA_SDK_DIR = /usr/local/cuda-9.1/samples
+MPI_DIR = /home/shyam/bbv4/dependencies/openmpi
+HDF5_DIR = /home/shyam/bbv4/dependencies/hdf5
+CGNS_DIR = /home/shyam/bbv4/dependencies/cgns
+CUDA_DIR = /usr/local/cuda-11.0
+CUDA_SDK_DIR = /usr/local/cuda-11.0/samples
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EDIT: COMPILERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -64,7 +64,7 @@ ifeq ($(CGNS_OUTPUT),TRUE)
 	LDLIBS = -lm -L $(HDF5_DIR)/lib -L $(CGNS_DIR)/lib -lcgns -lhdf5 
 endif
 
-CUDAOPT += -arch=sm_30 -Xcompiler -m64 -D$(PREC) -D$(PRECOND)
+CUDAOPT += -arch=sm_35 -Xcompiler -m64 -D$(PREC) -D$(PRECOND)
 
 CUDAINCS = -I $(CUDA_SDK_DIR)/common/inc
 CUDALIBS = -L $(CUDA_DIR)/lib64 -lcudart
@@ -74,6 +74,7 @@ SRCC =	bluebottle.c	\
 	mpi_comm.c	\
 	particle.c	\
 	recorder.c	\
+	tracer.c	\
 	rng.c		\
 	vtk.c
 
@@ -99,6 +100,7 @@ EXTRA = Makefile	\
 	particle.h	\
 	physalis.h	\
 	recorder.h	\
+	tracer.h	\
 	rng.h		\
 	vtk.h		\
 	bluebottle.cuh	\

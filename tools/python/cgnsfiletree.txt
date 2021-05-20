@@ -1,0 +1,69 @@
+##### FLOW.CGNS TREE #####
+Base
+  Zone0
+    Etc
+      Density
+      KinematicViscosity
+      Time
+    GridCoordinates
+    Solution
+      GridLocation
+      Phase
+      PhaseShell
+      Pressure
+      VelocityX
+      VelocityY
+      VelocityZ
+    ZoneType
+CGNSLibraryVersion
+
+##### PART.CGNS TREE #####
+Base
+  Zone0
+    Elements
+      ElementConnectivity
+      ElementRange
+    Etc
+      Time
+    GridCoordinates
+      CoordinateX
+      CoordinateY
+      CoordinateZ
+    Solution
+      AccelerationX
+      AccelerationY
+      AccelerationZ
+      AngularVelocityX
+      AngularVelocityXDot
+      AngularVelocityY
+      AngularVelocityYDot
+      AngularVelocityZ
+      AngularVelocityZDot
+      Density
+      DryCoeffRest
+      FricCoeff
+      GlobalIndex
+      HydroForceX
+      HydroForceY
+      HydroForceZ
+      InteractionForceX
+      InteractionForceY
+      InteractionForceZ
+      LambOrder
+      MomentX
+      MomentY
+      MomentZ
+      PoissonRatio
+      Radius
+      SpringForceX
+      SpringForceY
+      SpringForceZ
+      TotalForceX
+      TotalForceY
+      TotalForceZ
+      VelocityX
+      VelocityY
+      VelocityZ
+      YoungsModulus
+    ZoneType
+  CGNSLibraryVersion

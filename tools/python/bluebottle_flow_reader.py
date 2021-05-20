@@ -27,16 +27,7 @@ import numpy
 
 # Initialize the reader by passing the directory containing the CGNS files. This
 # returns a list containing the rounded time values available for reading.
-def init(sys):
-  # Parse command line args
-  if len(sys.argv) == 2:
-    basedir = sys.argv[1]
-  else:
-    print("Usage: requires ./path/to/some/output as command-line argument")
-    sys.exit()
-
-  if not basedir.endswith("/"):
-    basedir = basedir + "/"
+def init(basedir):
 
   global base
 
@@ -54,7 +45,7 @@ def init(sys):
       start = i.find("flow-") # XXX breaks on dirs with "flow-" in name
       t_read.append(i[start+5:-5])
 
-  return (sorted(t_read, key=float), basedir)
+  return sorted(t_read, key=float)
 
 # Open a particular CGNS file using a time value in the list returned by init().
 def open(time):
@@ -85,8 +76,8 @@ def read_time():
 
 # Read flow parameters
 def read_flow_params():
-  rho_f = numpy.array(f["/Base/Zone0/Etc/Density/ data"]) 
-  nu = numpy.array(f["/Base/Zone0/Etc/KinematicViscosity/ data"]) 
+  rho_f = numpy.array(f["/Base/Zone0/Etc/Density/ data"])
+  nu = numpy.array(f["/Base/Zone0/Etc/KinematicViscosity/ data"])
 
   return (rho_f, nu)
 
@@ -101,9 +92,9 @@ def read_flow_extents(basedir):
     sys.exit()
 
   Nxyz = numpy.array(gr["/Base/Zone0/ data"])
-  Nx = Nxyz[1, 2]
+  Nx = Nxyz[1, 0]
   Ny = Nxyz[1, 1]
-  Nz = Nxyz[1, 0]
+  Nz = Nxyz[1, 2]
 
   # These are output as x[k,j,i]
   x = numpy.array(gr["/Base/Zone0/GridCoordinates/CoordinateX/ data"])
@@ -123,10 +114,10 @@ def read_flow_extents(basedir):
   return (Nx, Ny, Nz, xs, xe, xl, ys, ye, yl, zs, ze, zl)
 
 # Read the flow positions.
-def read_flow_position():
+def read_flow_position(basedir):
   # Open grid file
   #global gr
-  infile = base + "/grid.cgns"
+  infile = basedir + "/grid.cgns"
   try:
     gr = h5.File(infile, 'r')
   except OSError:

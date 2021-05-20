@@ -2,7 +2,7 @@
  ********************************* BLUEBOTTLE **********************************
  *******************************************************************************
  *
- *  Copyright 2012 - 2018 Adam Sierakowski and Daniel Willen, 
+ *  Copyright 2012 - 2018 Adam Sierakowski and Daniel Willen,
  *                         The Johns Hopkins University
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     init_bins();
     mpi_parts_init();
   }
-  
+
   /* Initialize output writers */
   #ifndef CGNS_OUTPUT
     if (rank == 0) {
@@ -139,6 +139,10 @@ int main(int argc, char *argv[])
     }
   #endif
 
+
+  // TRACER STUFF
+  tracer_init();
+
   /*****************************************************************/
   /** Begin the main timestepping loop in the experimental domain **/
   /*****************************************************************/
@@ -217,7 +221,7 @@ int main(int argc, char *argv[])
 
       /* update pressure */
       cuda_update_p();
-      if (nparts > 0) { 
+      if (nparts > 0) {
         cuda_part_BC();
         cuda_part_p_fill();
       }
@@ -254,7 +258,7 @@ int main(int argc, char *argv[])
           printf("  Reached the max number of Lamb's iterations. Continuing...\n");
       }
     } else {
-      if (rank == 0) 
+      if (rank == 0)
         printf("  Reached the maxnumber of Lamb's iterations. Exiting...\n");
       exit(EXIT_FAILURE);
     }
@@ -272,12 +276,15 @@ int main(int argc, char *argv[])
       mpi_cuda_exchange_Gfz(_w);
     }
 
+    /* Tracer code should come here*/
+    tracer_execute(dt);
+
     /* Store flow variables for next timestep */
     cuda_store_u();
 
     /* Compute next time step size */
     dt0 = dt;
-    cuda_find_dt(); 
+    cuda_find_dt();
 
     /* Output */
     #ifdef CGNS_OUTPUT
@@ -312,7 +319,7 @@ int main(int argc, char *argv[])
     fflush(stdout);
   }
 
-  if (rank == 0) { 
+  if (rank == 0) {
     if (ttime > duration) {
       printf("\nEXPD: The simulation has reached its specified duration\n");
     }
@@ -347,6 +354,11 @@ BC bc;
 BC *_bc;
 gradP_struct gradP;
 g_struct g;
+
+// Tracer variables
+int tracercheck;
+// real rnum;
+// real randomnum;
 
 // Simulation parameters
 real dt;
@@ -473,6 +485,6 @@ real *_recv_Gfz_s;
 real *_recv_Gfz_t;
 real *_recv_Gfz_b;
 
-// Extra 
+// Extra
 long int cpumem;
 long int gpumem;

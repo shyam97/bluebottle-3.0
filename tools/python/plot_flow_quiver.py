@@ -40,33 +40,40 @@ if len(sys.argv) >= 2:    # output directory given
     t_start= sys.argv[2]
 
 else:                     # nothing given
-  print("read_flow error: Invalid commandline arguments.")
+  print("plot_flow_streamlines error: Invalid commandline arguments.")
   print("Usage: ")
-  print("   ./read_flow.py <./path/to/sim/output> <start_time>")
+  print("   ./plot_flow_streamlines <./path/to/sim/output> <start_time>")
   print(" or")
-  print("   ./read_flow.py <./path/to/sim/output>")
+  print("   ./plot_flow_streamlines.py <./path/to/sim/output>")
   sys.exit()
 
 # initialize the reader
 times = bbflow.init(data_dir)
+grid = bbflow.read_flow_extents()
 
 # Pull grid positions
 (x,y,z) = bbflow.read_flow_position()
-print(x.shape)
-print(y.shape)
-print(z.shape)
 
 # visit all outputted time values
 for time in times:
-  # open the CGNS file for this particular output time
-  print(time)
-  bbflow.open(time)
+    # open the CGNS file for this particular output time
+    print(time)
+    bbflow.open(time)
 
-  # read the CGNS file
-  t = bbflow.read_time()
-  (u,v,w) = bbflow.read_flow_velocity()
+    # read the CGNS file
+    t = bbflow.read_time()
+    (u,v,w) = bbflow.read_flow_velocity()
 
-  print("t =", t)
+    fig = plt.figure(num=1)
+    ax1 = fig.add_subplot(111,projection='3d')
+    ax1.quiver(x, y, z, u, v, w, normalize=True)
+    ax1.set_xlabel("$x$")
+    ax1.set_ylabel("$y$")
+    ax1.set_zlabel("$z$")
+    ax1.set_xlim3d(left=grid[3],right=grid[4])
+    ax1.set_ylim3d(bottom=grid[6],top=grid[7])
+    ax1.set_zlim3d(bottom=grid[9],top=grid[10])
+    plt.title("t=%.2f" %t[tt])
 
-  # close the CGNS file
-  bbflow.close()
+    # close the CGNS file
+    bbflow.close()
