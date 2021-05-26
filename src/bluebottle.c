@@ -277,7 +277,14 @@ int main(int argc, char *argv[])
     }
 
     /* Tracer code should come here*/
+    // double time_spent = 0.0;
+    // clock_t begin = clock();
+
     tracer_execute(dt);
+
+    // clock_t end = clock();
+    // time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+    // printf("The elapsed time for tracer simulation is %f seconds.\n", time_spent);
 
     /* Store flow variables for next timestep */
     cuda_store_u();
@@ -339,6 +346,7 @@ int main(int argc, char *argv[])
   /* Free host memory */
   domain_free();
   part_free();
+  tracer_exit();
 
   /* End MPI */
   mpi_end();
