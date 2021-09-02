@@ -516,7 +516,7 @@ extern dom_struct *dom;
  ******
  */
 
-extern int tracercheck;
+extern long int tracercheck;
 // extern tracer *tracer_array;
 // extern real randomnum;
 // extern real rnum;

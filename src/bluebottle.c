@@ -141,12 +141,17 @@ int main(int argc, char *argv[])
 
 
   // TRACER STUFF
-  tracer_init();
+  // tracer_start();
+  int tracerflag = 0;
+  double time_spent = 0.0;
+  clock_t begin = clock();
+  dt = 1.8E-3;
 
   /*****************************************************************/
   /** Begin the main timestepping loop in the experimental domain **/
   /*****************************************************************/
   while (ttime <= duration) {
+
     ttime += dt;
     rec_cgns_flow_ttime_out += dt;
     rec_cgns_part_ttime_out += dt;
@@ -251,8 +256,16 @@ int main(int argc, char *argv[])
     // Deal with lamb's iterations convergence (or not)
     if (lambflag == 1) {
       if (iter < lamb_max_iter) {
-        if (rank == 0)
-          printf("  The Lamb's coefficients converged in %d iterations\n", iter);
+        if (rank == 0) {
+          printf("  The Lamb's coefficients converged in %d iterations.\n", iter);
+
+          clock_t end = clock();
+          time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+          float remtime = time_spent*(duration - ttime)/ttime;
+          int hours = (int) floor(remtime/3600.0);
+          int minutes = (int) (remtime - (hours * 3600.0))/60.0;
+          printf("  Estimated time to completion = %d h, %d min.\n", hours, minutes);
+        }
       } else if (iter == lamb_max_iter) {
         if (rank == 0)
           printf("  Reached the max number of Lamb's iterations. Continuing...\n");
@@ -276,14 +289,18 @@ int main(int argc, char *argv[])
       mpi_cuda_exchange_Gfz(_w);
     }
 
+    /* Tracer init depending on iterations */
+    if (ttime>=0.0 && tracerflag==0) {
+      tracer_start();
+      tracerflag = 1;
+    }
     /* Tracer code should come here*/
-    // double time_spent = 0.0;
-    // clock_t begin = clock();
 
-    tracer_execute(dt);
+    if (tracerflag==1) {
+        tracer_execute(dt);
+        // ttime += dt;
+    }
 
-    // clock_t end = clock();
-    // time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
     // printf("The elapsed time for tracer simulation is %f seconds.\n", time_spent);
 
     /* Store flow variables for next timestep */
@@ -291,7 +308,11 @@ int main(int argc, char *argv[])
 
     /* Compute next time step size */
     dt0 = dt;
-    cuda_find_dt();
+    // cuda_find_dt();
+
+    if (iter >= 20) {
+      dt = dt*0.75;
+    }
 
     /* Output */
     #ifdef CGNS_OUTPUT
@@ -364,7 +385,7 @@ gradP_struct gradP;
 g_struct g;
 
 // Tracer variables
-int tracercheck;
+long int tracercheck;
 // real rnum;
 // real randomnum;
 
